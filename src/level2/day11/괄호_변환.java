@@ -22,7 +22,6 @@ public class 괄호_변환 {
 
         if(p.equals("") || checkString(p)) return p;
 
-        System.out.println("p "+ p);
         int left = 0;
         int right = 0;
         int index = -1;
@@ -42,14 +41,10 @@ public class 괄호_변환 {
         String u = p.substring(0, index+1);
         String v = p.substring(index+1 , p.length());
 
-        System.out.println("u " + u);
-        System.out.println("v " + v);
         if(checkString(u)){
             return u + getAnswer(v);
         }else{
-            System.out.println("else");
             String temp = "(" + getAnswer(v) + ")";
-            System.out.println("temp " + temp);
             StringBuilder sb = new StringBuilder(u);
             sb.deleteCharAt(sb.length()-1);
             sb.deleteCharAt(0);
@@ -60,7 +55,6 @@ public class 괄호_변환 {
                     sb.setCharAt(i, '(');
                 }
             }
-            //System.out.println("sb "+sb.toString());
             return temp + sb.toString();
         }
     }
