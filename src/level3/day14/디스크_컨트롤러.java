@@ -1,65 +1,79 @@
 package level3.day14;
 
-import java.util.PriorityQueue;
+import java.util.*;
 
 public class 디스크_컨트롤러 {
 
-    class Program implements Comparable<Program>{
+    static class Program{
         int start;
         int end;
-        double waitTime;
-        double runTime;
 
-        public Program(int start, int end, double waitTime, double runTime) {
+        public Program(int start, int end) {
             this.start = start;
             this.end = end;
-            this.waitTime = waitTime;
-            this.runTime = runTime;
         }
 
-        @Override
-        public int compareTo(Program o) {
-            double pre = (this.waitTime + this.runTime)/this.runTime;
-            double input = (o.waitTime + o.runTime)/o.runTime;
-
-            if(input > pre){
-                return 1;
-            }else if(input == pre){
-                return 0;
-            }else{
-                return -1;
-            }
-        }
     }
 
-    public int solution(int[][] jobs) {
+    public static int solution(int[][] jobs) {
         int answer = 0;
-        int endTime = jobs[0][1];
-        int index = 0;
-        PriorityQueue<Program> pq = new PriorityQueue<Program>();
+        int endTime = 0;
+        int waitTime = 0;
+        int index = 1;
+        int temp = 0;
 
-        for(int i=1; i<jobs.length; i++){
-            if(jobs[i][0] == endTime){
-                endTime += jobs[i][1];
-            }else{
-                index = i;
-                break;
-            }
-        }
-        int temp = endTime;
-        for(int i=index; i<jobs.length; i++){
-            pq.offer(new Program(jobs[i][0], jobs[i][1],temp - jobs[i][0], jobs[i][1]));
-            temp += jobs[i][1];
+        Arrays.sort(jobs, (j1 , j2) -> j1[0] - j2[0]);
+        PriorityQueue<Program> pq = new PriorityQueue<>(jobs.length, (p1,p2) -> p1.end - p2.end);
+        PriorityQueue<Program> q = new PriorityQueue<>(jobs.length, (p1,p2)-> p1.start - p2.start);
+
+        for(int i=0; i<jobs.length; i++){
+            q.offer(new Program(jobs[i][0], jobs[i][1]));
         }
 
-        answer = endTime;
-        while (!pq.isEmpty()){
-            Program p = pq.poll();
-            answer += (endTime - p.start) + p.end;
-            endTime += p.end;
-        }
-        answer /= jobs.length;
+        Program p = q.poll();
+        endTime =  p.end;
+        waitTime = 0;
 
-        return answer;
+        while (!q.isEmpty()){
+            p = q.poll();
+            System.out.println("start " + p.start + " " + p.end+ " "+endTime);
+           if(p.start <= endTime){
+               pq.offer(new Program(p.start, p.end));
+           }else{
+               if(pq.isEmpty()){
+                   endTime += p.end;
+               }else{
+                   q.offer(p);
+                   while (true){
+                       Program pp = pq.poll();
+                       if(q.peek().start <= endTime) {
+                           pq.offer(pp);
+                           break;
+                       }
+                       waitTime += (endTime - pp.start);
+                       endTime += pp.end;
+                       System.out.println("add " +pp.start + " " + pp.end+ " "+endTime + " "+ waitTime);
+                   }
+               }
+
+           }
+        }
+        while(!pq.isEmpty()){
+            Program pp = pq.poll();
+            waitTime += (endTime - pp.start);
+            endTime += pp.end;
+            System.out.println("add " +pp.start + " " + pp.end+ " "+endTime);
+        }
+
+        System.out.println(endTime+ " " + waitTime);
+        endTime = (endTime + waitTime)/jobs.length;
+        System.out.println(endTime);
+
+        return endTime;
+    }
+
+    public static void main(String[] args) {
+        int[][] arr = {{0, 10}, {2, 10}, {9, 10}, {15, 2}};
+        solution(arr);
     }
 }
