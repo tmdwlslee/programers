@@ -1,7 +1,7 @@
 package level3.day16;
 
 public class P3 {
-    public int solution(int[] A) {
+    public static int solution(int[] A) {
         // write your code in Java SE 8
         int max = Integer.MIN_VALUE;
         for(int i=0; i<A.length; i++){
