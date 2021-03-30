@@ -18,11 +18,16 @@ public class 섬연결하기 {
         }
     }
 
-    public static void union(int[] parent, int a, int b){
+    public static void union(int[] parent, int[] rank, int a, int b){
         a = find(parent, a);
         b = find(parent, b);
-        if(a < b) parent[b] = a;
-        else parent[a] = b;
+        if(rank[a] > rank[b]) parent[b] = a;
+        else {
+            parent[a] = b;
+            if (rank[a] == rank[b]) {
+                rank[b]++;
+            }
+        }
     }
 
     public static int find(int[] parent, int x){
@@ -33,10 +38,12 @@ public class 섬연결하기 {
     public int solution(int n, int[][] costs) {
         int answer = 0;
         int[] parent = new int[n];
+        int[] rank = new int[n];
         ArrayList<Node> list = new ArrayList<>();
 
         for(int i=0; i<n; i++){
             parent[i] = i;
+            rank[i] = 0;
         }
 
         for(int i=0; i<costs.length; i++){
@@ -50,7 +57,7 @@ public class 섬연결하기 {
             int a = find(parent, node.start);
             int b = find(parent, node.end);
             if(a == b) continue;
-            union(parent, a, b);
+            union(parent, rank, a, b);
             answer += node.len;
         }
 
