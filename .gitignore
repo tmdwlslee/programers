@@ -1,3 +1,5 @@
 # Project exclude paths
 /out/
 .idea
+/src/kakao/giftCard.java
+/src/kakao/robotFactory.java
