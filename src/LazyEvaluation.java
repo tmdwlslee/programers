@@ -55,4 +55,5 @@ public class LazyEvaluation {
             System.out.println("No ");
         }
     }
+
 }
